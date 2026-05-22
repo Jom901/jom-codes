@@ -1,8 +1,8 @@
 ---
 title: Jonathan Medina — Software Engineer
 description: Professional profile and résumé for Jonathan Medina, Mobile/Full Stack/Cloud Engineer based in Austin, TX.
-canonical_url: https://jomcodes.github.io
-md_url: https://jomcodes.github.io/profile.md
+canonical_url: https://jom901.github.io/jom-codes
+md_url: https://jom901.github.io/jom-codes/profile.md
 last_updated: 2025-05-22
 ---
 

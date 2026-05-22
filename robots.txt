@@ -18,4 +18,4 @@ User-agent: cohere-ai
 Allow: /
 
 # Sitemap
-Sitemap: https://jomcodes.github.io/sitemap.xml
+Sitemap: https://jom901.github.io/jom-codes/sitemap.xml
