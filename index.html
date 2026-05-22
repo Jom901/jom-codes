@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Jonathan Medina // Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root{
+    --bg: #0a0a0a;
+    --bg-2: #121212;
+    --ink: #f1f1ef;
+    --ink-2: #b8b8b3;
+    --ink-3: #74746e;
+    --ink-4: #3a3a36;
+    --line: #1f1f1d;
+    --line-2: #2e2e2b;
+    --accent: #ff7a2f;
+    --sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --pad-y: 80px;
+    --grid-line: rgba(255,255,255,0.04);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+    min-height:100vh;
+  }
+  ::selection{background:var(--accent);color:#0a0a0a}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit}
+
+  .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+  @media(max-width:640px){ .wrap{padding:0 16px} }
+
+  /* status bar */
+  .status{
+    position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line-2);
+    font-family:var(--mono);font-size:11.5px;letter-spacing:0.04em;
+  }
+  .status-row{
+    display:grid;grid-template-columns: auto 1fr auto auto auto;gap:0;align-items:stretch;
+  }
+  .status-cell{padding:10px 16px;border-right:1px solid var(--line-2);display:flex;align-items:center;gap:8px;color:var(--ink-2)}
+  .status-cell:last-child{border-right:0}
+  .status-cell .k{color:var(--ink-3);text-transform:uppercase;font-size:10.5px;letter-spacing:0.1em}
+  .status-cell .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .status-cell.shrink{min-width:0}
+  .status-cell a:hover{color:var(--accent)}
+  .status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.45}}
+  .live-clock{color:var(--accent)}
+
+  @media(max-width:980px){
+    .status-cell.hide-md{display:none}
+  }
+  @media(max-width:720px){
+    .status-row{grid-template-columns: auto 1fr auto}
+    .status-cell.hide-mobile{display:none}
+  }
+
+  /* hero */
+  .hero{padding: calc(var(--pad-y) * 1.4) 0 var(--pad-y);position:relative;overflow:hidden}
+
+  .hero-bar{
+    display:grid;grid-template-columns: repeat(12, 1fr);gap:24px;
+    border-top:2px solid var(--ink);border-bottom:1px solid var(--line-2);
+    padding:14px 0 16px;font-family:var(--mono);font-size:11.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-3);
+  }
+  .hero-bar .col{grid-column:span 3}
+  .hero-bar .col b{color:var(--ink);font-weight:500;display:block;margin-top:4px;text-transform:none;font-size:13.5px;letter-spacing:0}
+  @media(max-width:880px){
+    .hero-bar{grid-template-columns:repeat(2,1fr);gap:18px}
+    .hero-bar .col{grid-column:span 1}
+  }
+
+  .mark{
+    font-family:var(--sans);font-weight:700;font-size:clamp(72px, 17vw, 240px);
+    line-height:0.86;letter-spacing:-0.05em;color:var(--ink);margin:36px 0 0;text-transform:uppercase;
+  }
+  .mark .l1{display:block}
+  .mark .l2{display:block;color:var(--accent);font-style:italic;font-weight:700}
+  .mark .l3{display:block;color:var(--ink);}
+  .mark .punch{
+    display:inline-block;background:var(--accent);color:var(--bg);padding:0 0.12em;line-height:0.9;border-radius:0;
+  }
+  .mark .strike{text-decoration: line-through;text-decoration-thickness:0.06em;color:var(--ink-3)}
+
+  .hero-deck{
+    margin-top:40px;display:grid;grid-template-columns: 1.4fr 1fr;gap:48px;align-items:start;
+    border-top:1px solid var(--line-2);padding-top:32px;
+  }
+  @media(max-width:880px){ .hero-deck{grid-template-columns:1fr;gap:28px} }
+  .hero-deck p{
+    margin:0;font-family:var(--sans);font-size:clamp(17px, 1.5vw, 21px);line-height:1.5;color:var(--ink-2);max-width:50ch;
+  }
+  .hero-deck p em{color:var(--accent);font-style:normal;background:var(--accent);color:var(--bg);padding:0 4px}
+
+  .hero-cta{display:flex;gap:0;border:1px solid var(--ink)}
+  .hero-cta .btn{
+    flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 18px;
+    font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:500;
+    cursor:pointer;border:0;border-right:1px solid var(--ink);background:transparent;color:var(--ink);transition:all .15s;
+  }
+  .hero-cta .btn:last-child{border-right:0}
+  .hero-cta .btn:hover{background:var(--accent);color:var(--bg)}
+  .hero-cta .btn.primary{background:var(--accent);color:var(--bg)}
+  .hero-cta .btn.primary:hover{background:var(--ink);color:var(--bg)}
+
+  /* stats strip */
+  .strip{
+    border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);
+    display:grid;grid-template-columns: repeat(4, 1fr);gap:0;
+    margin: var(--pad-y) 0 0;
+  }
+  .strip .cell{
+    padding:36px 24px;border-right:1px solid var(--line-2);position:relative;
+    display:flex;flex-direction:column;gap:6px;cursor:default;transition:background .2s;
+  }
+  .strip .cell:last-child{border-right:0}
+  .strip .cell:hover{background:rgba(255,122,47,0.06)}
+  .strip .cell .n{
+    font-family:var(--sans);font-weight:700;font-size:clamp(40px, 5vw, 64px);
+    line-height:1;letter-spacing:-0.02em;color:var(--ink);font-variant-numeric:tabular-nums;
+  }
+  .strip .cell:hover .n{color:var(--accent)}
+  .strip .cell .lbl{
+    font-family:var(--mono);font-size:11px;color:var(--ink-3);
+    letter-spacing:0.1em;text-transform:uppercase;margin-top:8px;
+  }
+  .strip .cell .sub{font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:0.02em}
+  @media(max-width:720px){
+    .strip{grid-template-columns:repeat(2,1fr)}
+    .strip .cell:nth-child(2){border-right:0}
+    .strip .cell:nth-child(1),.strip .cell:nth-child(2){border-bottom:1px solid var(--line-2)}
+  }
+
+  /* section base */
+  section[data-sec]{padding: var(--pad-y) 0;position:relative}
+  .sec-head{
+    border-top:2px solid var(--ink);padding-top:18px;margin-bottom:40px;
+    display:grid;grid-template-columns: auto 1fr auto;gap:24px;align-items:baseline;
+  }
+  .sec-head .id{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase}
+  .sec-head h2{
+    font-family:var(--sans);font-weight:700;font-size:clamp(36px,5vw,64px);letter-spacing:-0.03em;line-height:0.95;
+    margin:0;text-transform:uppercase;
+  }
+  .sec-head .meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:0.04em}
+  @media(max-width:640px){
+    .sec-head{grid-template-columns:1fr;gap:12px}
+    .sec-head .meta{order:3}
+  }
+
+  /* work */
+  .roles{display:flex;flex-direction:column;gap:0;border-bottom:1px solid var(--line-2)}
+  .role{
+    display:grid;grid-template-columns: 96px 220px 1fr;gap:24px;
+    border-top:1px solid var(--line-2);padding:28px 0;
+    transition: background .2s ease, padding .2s ease;
+    cursor:default;align-items:start;
+  }
+  .role:hover{background:rgba(255,255,255,0.015);padding-left:8px;padding-right:8px}
+  .role:hover .role-co{color:var(--accent)}
+  .role .role-no{
+    font-family:var(--mono);font-size:11.5px;color:var(--ink-4);letter-spacing:0.06em;padding-top:6px;
+  }
+  .role .role-when{padding-top:4px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:0.02em}
+  .role .role-when b{display:block;color:var(--ink-2);font-weight:500;margin-bottom:6px}
+  .role .role-when .loc{display:block;color:var(--ink-4);margin-top:4px}
+  .role .role-when .now-tag{
+    display:inline-block;margin-top:10px;padding:2px 7px;background:var(--accent);color:var(--bg);
+    font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  }
+  .role .role-body h3{
+    font-family:var(--sans);font-weight:600;font-size:24px;letter-spacing:-0.01em;line-height:1.1;margin:0 0 2px;color:var(--ink);
+  }
+  .role .role-co{
+    font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink-2);margin-bottom:14px;letter-spacing:0.01em;
+    transition: color .2s ease;
+  }
+  .role .role-body ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:15px;line-height:1.55}
+  .role .role-body ul li{margin-bottom:6px}
+  .role .role-body ul li::marker{color:var(--accent)}
+  .role .stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .role .stack .s{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+    padding:3px 8px;border:1px solid var(--line-2);color:var(--ink-3);
+  }
+  .role:hover .stack .s{border-color:var(--ink-4);color:var(--ink-2)}
+
+  @media(max-width:880px){
+    .role{grid-template-columns: 1fr;gap:8px}
+    .role .role-no{display:none}
+  }
+
+  /* skills */
+  .skg{
+    display:grid;grid-template-columns:repeat(12,1fr);gap:0;border-top:1px solid var(--line-2);
+  }
+  .skg .skc{
+    grid-column:span 4;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);
+    padding:24px 20px;
+  }
+  .skg .skc:nth-child(3n){border-right:0}
+  .skg .skc h4{
+    font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:0.12em;text-transform:uppercase;
+    margin:0 0 14px;display:flex;justify-content:space-between;
+  }
+  .skg .skc h4 .n{color:var(--accent)}
+  .skg .skc ul{margin:0;padding:0;list-style:none}
+  .skg .skc ul li{
+    font-family:var(--sans);font-size:17px;font-weight:500;letter-spacing:-0.01em;color:var(--ink);
+    padding:5px 0;border-bottom:1px dashed var(--line-2);
+    display:flex;align-items:center;gap:8px;cursor:default;transition: color .15s ease, padding .15s ease;
+  }
+  .skg .skc ul li:last-child{border-bottom:0}
+  .skg .skc ul li:hover{color:var(--accent);padding-left:6px}
+  .skg .skc ul li::before{content:"+";color:var(--ink-4);font-family:var(--mono);font-size:12px}
+  .skg .skc ul li:hover::before{color:var(--accent)}
+
+  @media(max-width:880px){
+    .skg .skc{grid-column:span 6}
+    .skg .skc:nth-child(2n){border-right:0}
+    .skg .skc:nth-child(3n){border-right:1px solid var(--line-2)}
+  }
+  @media(max-width:560px){
+    .skg .skc{grid-column:span 12;border-right:0}
+    .skg .skc:nth-child(3n){border-right:0}
+  }
+
+  /* contact */
+  .cpanel{
+    border:1px solid var(--line-2);background:var(--bg-2);
+  }
+  .cpanel-top{
+    padding:48px 36px;border-bottom:1px solid var(--line-2);
+    display:grid;grid-template-columns: 1.4fr 1fr;gap:48px;align-items:center;
+  }
+  @media(max-width:880px){ .cpanel-top{grid-template-columns:1fr;gap:24px;padding:32px 24px} }
+  .cpanel-top h3{
+    font-family:var(--sans);font-weight:700;font-size:clamp(28px,4vw,48px);
+    margin:0;letter-spacing:-0.025em;line-height:1.02;text-transform:uppercase;color:var(--ink);
+  }
+  .cpanel-top h3 .a{color:var(--accent)}
+  .cpanel-top p{margin:0;font-family:var(--sans);color:var(--ink-2);font-size:16px;line-height:1.5}
+  .cpanel-rows{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  @media(max-width:720px){ .cpanel-rows{grid-template-columns:1fr} }
+  .cp-row{
+    display:flex;align-items:center;justify-content:space-between;padding:22px 36px;
+    border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);
+    transition: background .15s ease;cursor:default;
+  }
+  button.cp-row{appearance:none;border:0;background:transparent;width:100%;text-align:inherit;font:inherit;color:inherit;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);cursor:pointer}
+  .cp-row .cp-val .copied-tag{
+    display:inline-block;margin-left:10px;padding:2px 7px;background:var(--accent);color:var(--bg);
+    font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;vertical-align:1px;
+    animation: copiedIn .2s ease;
+  }
+  @keyframes copiedIn{from{opacity:0;transform:translateY(-2px)}to{opacity:1;transform:none}}
+  .cp-row:last-child{border-right:0}
+  .cp-row:nth-child(2n){border-right:0}
+  .cp-row:nth-last-child(-n+2){border-bottom:0}
+  @media(max-width:720px){
+    .cp-row{padding:18px 24px;border-right:0}
+    .cp-row:nth-last-child(-n+2){border-bottom:1px solid var(--line-2)}
+    .cp-row:last-child{border-bottom:0}
+  }
+  .cp-row:hover{background:rgba(255,122,47,0.06)}
+  .cp-row:hover .cp-val{color:var(--accent)}
+  .cp-lbl{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:0.14em;text-transform:uppercase}
+  .cp-val{font-family:var(--mono);font-size:13px;color:var(--ink);transition: color .15s ease;text-align:right;word-break:break-all}
+
+  /* marquee */
+  .marquee{
+    margin:var(--pad-y) 0 0;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);
+    overflow:hidden;padding:18px 0;
+  }
+  .marquee-inner{
+    display:flex;gap:48px;white-space:nowrap;animation: scroll 38s linear infinite;
+    font-family:var(--sans);font-weight:700;font-size:36px;letter-spacing:-0.02em;text-transform:uppercase;
+  }
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .marquee-inner .b{color:var(--accent)}
+  .marquee-inner .sep{color:var(--ink-4)}
+
+  /* footer */
+  footer{
+    padding:36px 0;border-top:1px solid var(--line-2);margin-top:var(--pad-y);
+    font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:0.04em;
+  }
+  .foot-grid{
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;
+  }
+  .foot-grid b{color:var(--ink-2);font-weight:500}
+  .foot-grid .pets{
+    display:inline-flex;gap:6px;align-items:center;
+  }
+  .foot-grid .pets span{padding:1px 6px;border:1px solid var(--line-2);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(16px);transition: opacity .55s ease, transform .55s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body data-density="regular" data-anim="full">
+<div id="root"></div>
+
+<script type="text/babel">
+const ROLES = [
+  { co:"General Motors", role:"Mobile Software Engineer", range:"2025 — Present", roman:"i", ongoing:true, loc:"Austin, TX",
+    bullets:[
+      "Designed, implemented and released the GM Loyalty Rewards credit card integration with Barclays — 4,000+ applications in the first month.",
+      "Built production-grade Datadog observability — metrics, alarms, dashboards.",
+      "Deployed AI-powered anomaly detection via Terraform-managed Datadog integrations.",
+      "Leveraged LLM-assisted tooling (Claude, Copilot) for refactoring, test gen and reviews.",
+    ], stack:["React Native","TypeScript","Datadog","Terraform","AWS"] },
+  { co:"Amazon", role:"SDE II", range:"2022 — 2025", roman:"ii", loc:"New York, NY",
+    bullets:[
+      "Built conversion tracking products for Amazon DSP — advertiser measurement at scale.",
+      "Designed, coded and shipped UI and API integrations generating $5M+ revenue per onboarded advertiser in a close beta.",
+      "API Bar Raiser — reviewed and improved API designs across teams.",
+      "Delivered customer-facing features under tight deadlines with product & partner teams.",
+    ], stack:["TypeScript","AWS","Java","React"] },
+  { co:"Amazon", role:"SDE I", range:"2020 — 2022", roman:"iii", loc:"Remote",
+    bullets:[
+      "Built creative templating services for Amazon DSP — flexible, scalable ad creative generation.",
+      "Designed backend & frontend upgrades for internal and external customers.",
+      "Mentored juniors, conducted interviews, supported onboarding.",
+    ], stack:["TypeScript","AWS","Java","React"] },
+  { co:"Nova Credit", role:"Software Engineer", range:"2019 — 2020", roman:"iv", loc:"New York, NY",
+    bullets:[
+      "Developed feature enhancements for foreign credit bureau integrations used in credit decisioning workflows.",
+      "Implemented integration and regression tests to support major product upgrades.",
+    ], stack:["Node.js","TypeScript","Java"] },
+  { co:"BNY Mellon", role:"Lead Fullstack Engineer", range:"2018 — 2019", roman:"v", loc:"New York, NY",
+    bullets:[
+      "Designed and implemented client libraries, APIs and features for the firm's cloud platform discovery layer.",
+      "Designed and implemented UIs for demos and developer support.",
+    ], stack:["Java","Spring","JavaScript","AWS"] },
+  { co:"BNY Mellon", role:"Full Stack Engineer", range:"2017 — 2018", roman:"vi", loc:"New York, NY",
+    bullets:[
+      "Built microservices for tracking exception messages within an Asset Servicing Transaction Message system.",
+      "Built microservices to aid remediation of User-Defined Tools across the firm.",
+    ], stack:["Java","Spring","JavaScript"] },
+];
+
+const SKILLS = [
+  { group:"Languages",     items:["TypeScript","JavaScript","Java","Python"] },
+  { group:"Frontend",      items:["React","React Native","HTML","CSS"] },
+  { group:"Backend",       items:["Node.js","Spring","REST","gRPC"] },
+  { group:"Cloud",         items:["AWS Lambda","EC2","ECS","CDK"] },
+  { group:"Infra",         items:["Terraform","Docker","UNIX/Linux"] },
+  { group:"Observability", items:["Datadog","CloudWatch"] },
+];
+
+const CONTACT = {
+  email: "jonathan.medina.eng@gmail.com",
+  github: "github.com/jom901",
+  githubUrl: "https://github.com/jom901",
+  linkedin: "linkedin.com/in/jonathan-medina-02787458",
+  linkedinHandle: "in/jonathan-medina-02787458",
+  linkedinUrl: "https://www.linkedin.com/in/jonathan-medina-02787458/",
+  resume: "https://drive.google.com/file/d/1PGP8_yayJyhmGPBxMJokxeAnzsDki1ep/view?usp=sharing",
+};
+
+function useReveal(ref){
+  React.useEffect(() => {
+    if(!ref.current) return;
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, []);
+}
+
+function useClock(){
+  const [t, setT] = React.useState(() => new Date());
+  React.useEffect(() => {
+    const id = setInterval(() => setT(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return t;
+}
+
+function Status(){
+  const t = useClock();
+  const fmt = t.toLocaleTimeString("en-US", { timeZone: "America/Chicago", hour12: false });
+  return (
+    <div className="status">
+      <div className="status-row">
+        <div className="status-cell"><span className="status-dot" /> <span className="k">live</span> <span>austin, tx</span></div>
+        <div className="status-cell shrink hide-mobile"><span className="k">role</span> <span className="truncate">SWE · General Motors</span></div>
+        <div className="status-cell hide-md"><a href={CONTACT.linkedinUrl} target="_blank" rel="noreferrer">{CONTACT.linkedinHandle}</a></div>
+        <div className="status-cell hide-md"><a href={CONTACT.githubUrl} target="_blank" rel="noreferrer">{CONTACT.github}</a></div>
+        <div className="status-cell"><span className="k">CT</span> <span className="live-clock">{fmt}</span></div>
+      </div>
+    </div>
+  );
+}
+
+function Hero(){
+  return (
+    <section className="hero">
+      <div className="wrap">
+        <div className="hero-bar">
+          <div className="col">portfolio · vol. 03<br/><b>Jonathan Medina</b></div>
+          <div className="col">discipline<br/><b>Software Engineering</b></div>
+          <div className="col">based in<br/><b>Austin, Texas</b></div>
+          <div className="col">shipping since<br/><b>August 2017</b></div>
+        </div>
+
+        <div className="mark" aria-label="Jonathan Medina — Engineer who ships it">
+          <span className="l1">Engineer</span>
+          <span className="l2">who <span className="strike">talks</span></span>
+          <span className="l3"><span className="punch">ships it</span></span>
+        </div>
+
+        <div className="hero-deck">
+          <p>
+            Software engineer with vast experience shipping <em>scalable</em> and impactful experiences
+            across mobile, web and cloud. Currently building React Native apps and agentic workflows
+            at General Motors with real, measurable revenue impact.
+          </p>
+          <div className="hero-cta">
+            <a className="btn primary" href={CONTACT.resume} target="_blank" rel="noreferrer">↓ résumé.pdf</a>
+            <a className="btn" href={`mailto:${CONTACT.email}`}>→ email</a>
+            <a className="btn" href={CONTACT.linkedinUrl} target="_blank" rel="noreferrer">→ linkedin</a>
+            <a className="btn" href={CONTACT.githubUrl} target="_blank" rel="noreferrer">→ github</a>
+          </div>
+        </div>
+
+        <div className="strip">
+          <div className="cell"><div className="n">9</div><div className="lbl">years shipping</div><div className="sub">since aug 2017</div></div>
+          <div className="cell"><div className="n">$5M+</div><div className="lbl">per advertiser onboarded</div><div className="sub">amazon dsp · close beta</div></div>
+          <div className="cell"><div className="n">4K+</div><div className="lbl">apps in 30 days</div><div className="sub">gm × barclays loyalty</div></div>
+          <div className="cell"><div className="n">3</div><div className="lbl">languages spoken</div><div className="sub">EN · ES · FR</div></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Work(){
+  const ref = React.useRef(null); useReveal(ref);
+  return (
+    <section data-sec="work" id="work">
+      <div className="wrap reveal" ref={ref}>
+        <div className="sec-head">
+          <span className="id">§ 01</span>
+          <h2>Work / résumé</h2>
+          <span className="meta">six roles · since aug 2017</span>
+        </div>
+        <div className="roles">
+          {ROLES.map((r,i) => (
+            <div className="role" key={i}>
+              <div className="role-no">[{String(i+1).padStart(2,"0")}/{String(ROLES.length).padStart(2,"0")}]</div>
+              <div className="role-when">
+                <b>{r.range}</b>
+                <span className="loc">{r.loc}</span>
+                {r.ongoing && <span className="now-tag">● now</span>}
+              </div>
+              <div className="role-body">
+                <h3>{r.role}</h3>
+                <div className="role-co">{r.co}</div>
+                <ul>{r.bullets.map((b,j) => <li key={j}>{b}</li>)}</ul>
+                <div className="stack">{r.stack.map(s => <span className="s" key={s}>{s}</span>)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Skills(){
+  const ref = React.useRef(null); useReveal(ref);
+  return (
+    <section data-sec="skills" id="skills">
+      <div className="wrap reveal" ref={ref}>
+        <div className="sec-head">
+          <span className="id">§ 02</span>
+          <h2>The toolkit</h2>
+          <span className="meta"></span>
+        </div>
+        <div className="skg">
+          {SKILLS.map((s,i) => (
+            <div className="skc" key={s.group}>
+              <h4><span>{s.group}</span><span className="n">{String(i+1).padStart(2,"0")}</span></h4>
+              <ul>{s.items.map(it => <li key={it}>{it}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Contact(){
+  const ref = React.useRef(null); useReveal(ref);
+  const [copied, setCopied] = React.useState(false);
+  function copyEmail(e){
+    e.preventDefault();
+    const text = CONTACT.email;
+    const flash = () => { setCopied(true); setTimeout(() => setCopied(false), 1800); };
+    let done = false;
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly","");
+      ta.style.position = "fixed"; ta.style.left = "-9999px"; ta.style.top = "0";
+      document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0, text.length);
+      done = document.execCommand("copy");
+      document.body.removeChild(ta);
+    }catch(_){ done = false; }
+    if(done){ flash(); return; }
+    if(navigator.clipboard?.writeText){
+      navigator.clipboard.writeText(text).then(flash).catch(() => flash());
+    } else {
+      flash();
+    }
+  }
+  return (
+    <section data-sec="contact" id="contact">
+      <div className="wrap reveal" ref={ref}>
+        <div className="sec-head">
+          <span className="id">§ 03</span>
+          <h2>Contact</h2>
+          <span className="meta">response: usually &lt; 24h</span>
+        </div>
+        <div className="cpanel">
+          <div className="cpanel-top">
+            <h3>Let's <span className="a">make</span> something / talk shop / swap notes on guitars.</h3>
+            <p>Roles, collaborations, or coffee — all welcome.</p>
+          </div>
+          <div className="cpanel-rows">
+            <button className="cp-row" onClick={copyEmail} type="button" aria-label="Copy email to clipboard">
+              <span className="cp-lbl">{copied ? "✓ copied" : "⎘ copy email"}</span>
+              <span className="cp-val">{CONTACT.email}{copied && <span className="copied-tag">copied</span>}</span>
+            </button>
+            <a className="cp-row" href={CONTACT.linkedinUrl} target="_blank" rel="noreferrer">
+              <span className="cp-lbl">→ linkedin</span><span className="cp-val">{CONTACT.linkedinHandle}</span>
+            </a>
+            <a className="cp-row" href={CONTACT.githubUrl} target="_blank" rel="noreferrer">
+              <span className="cp-lbl">→ github</span><span className="cp-val">{CONTACT.github}</span>
+            </a>
+            <a className="cp-row" href={CONTACT.resume} target="_blank" rel="noreferrer">
+              <span className="cp-lbl">→ résumé</span><span className="cp-val">drive.google · view ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Marquee(){
+  const phrase = ["React Native","TypeScript","AWS","Datadog","Terraform","Java","Python","Node.js","Agentic Workflows","Spanish","English","French","Guitar","Miniature Painting","3 Cats","2 Dogs","1 Gecko"];
+  const stream = [...phrase, ...phrase];
+  return (
+    <div className="marquee">
+      <div className="marquee-inner">
+        {stream.map((p,i) => (
+          <span key={i}>
+            <span className={i%3===0?"b":""}>{p}</span>
+            <span className="sep"> / </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function App(){
+  return (
+    <>
+      <Status />
+      <Hero />
+      <Marquee />
+      <Work />
+      <Skills />
+      <Contact />
+      <footer>
+        <div className="wrap">
+          <div className="foot-grid">
+            <span>© {new Date().getFullYear()} <b>Jonathan Medina</b> // SWE · Austin, TX</span>
+            <span className="pets">household: <span>🐈 3</span> <span>🐕 2</span> <span>🦎 1</span></span>
+            <span>built from scratch · no template</span>
+          </div>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
