@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# AI agents and crawlers are welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# Sitemap
+Sitemap: https://jomcodes.github.io/sitemap.xml
